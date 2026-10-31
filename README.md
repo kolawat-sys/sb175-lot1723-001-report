@@ -55,6 +55,16 @@ CI ใช้สมมติฐานความเป็นอิสระแ�
 
 ## สถานะการตรวจ
 
+ฉบับ **Editorial** ใช้หน้าปกภาพสินค้า หัวเรื่อง Georgia บนพื้นงาช้าง สีแดงอิฐสำหรับจุดเน้น และ Noto Sans Thai ที่ฝังไว้ในไฟล์ แถบเลือก Layer ติดด้านบนขณะเลื่อนอ่าน ตัวเลขและข้อมูลทั้ง 39 แถวยังคงเดิม
+
+หลักประกอบการออกแบบ:
+
+- [Web Design in 4 Minutes](https://github.com/jgthms/web-design-in-4-minutes) — ความกว้างบรรทัด ระยะห่าง และน้ำหนักสี
+- [Magic of CSS](https://github.com/adamschwartz/magic-of-css) — typography, layout และตาราง
+- [UI Craft — Editorial](https://github.com/educlopez/ui-craft/blob/main/skills/ui-craft-editorial/SKILL.md) — แนวทางหน้าสไตล์นิตยสาร อ่านเป็นแหล่งอ้างอิง ไม่ได้ติดตั้ง skill เพิ่ม
+
+ออกแบบหน้ารายงานเฉพาะงานนี้ ไม่ได้คัดลอก template จาก repo อ้างอิง
+
 ตรวจ mean และ sample SD ซ้ำกับผล NumPy / Python statistics ตรวจข้อมูล 39 แถวและ hash ต้นฉบับ ทดสอบ logic สลับ Layer, keyboard navigation, เลือกนัด และสร้าง CSV ในแบบจำลอง DOM พร้อมเรนเดอร์กราฟ SVG ด้วย ECharts จริงที่ขนาดกว้างและแคบ
 
 ตรวจเว็บที่เผยแพร่บน GitHub Pages ใน Chrome จริงแล้ว: สลับสอง Layer, เลือกนัดและเลขนัดยิงจริง, เปิดตาราง 39 แถว, โหลดภาพผู้ผลิต และดาวน์โหลด CSV โดย SHA-256 ของไฟล์ที่ดาวน์โหลดตรงกับฉบับส่งมอบ
@@ -63,6 +73,8 @@ CI ใช้สมมติฐานความเป็นอิสระแ�
 
 ตรวจแหล่งข้อมูลวันที่ **31 ตุลาคม 2026**
 
+ฉบับ Editorial ตรวจซ้ำบนเว็บจริงใน Chrome ทั้งขนาดหน้าต่างปกติและ viewport 390 / 320 px: ภาพผู้ผลิตโหลดได้, กราฟสี่แบบเรนเดอร์, สลับ Layer และเลือกเลขบันทึก 26 แสดงนัดยิงจริง 27 / shot 17, ตารางต้นทางมี 39 แถว, หน้าหลักไม่ล้นแนวนอนและตารางกว้างเลื่อนภายในกรอบได้ ไม่พบ console error ในรอบที่ตรวจ ส่วน logic CSV และผลคำนวณตรวจซ้ำอัตโนมัติ โดย CSV ไม่เปลี่ยนจากฉบับก่อน
+
 ## Third-party notices
 
-Apache ECharts © The Apache Software Foundation, Apache License 2.0 ดู `THIRD_PARTY_NOTICES.txt` ภาพสินค้า © Sellier & Bellot และยังคงเป็นสิทธิ์ของเจ้าของเดิม
+Apache ECharts © The Apache Software Foundation, Apache License 2.0 และ Noto Sans Thai © The Noto Project Authors, SIL Open Font License 1.1 ดู `THIRD_PARTY_NOTICES.txt` ภาพสินค้า © Sellier & Bellot และยังคงเป็นสิทธิ์ของเจ้าของเดิม
