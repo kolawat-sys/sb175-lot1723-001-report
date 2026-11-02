@@ -148,7 +148,7 @@ function stats(values){
  return {n,mean,median:n%2?sorted[(n-1)/2]:(sorted[n/2-1]+sorted[n/2])/2,sd:Math.sqrt(values.reduce((s,v)=>s+(v-mean)**2,0)/(n-1)),min:sorted[0],max:sorted[n-1],es:sorted[n-1]-sorted[0]};
 }
 const baseline=stats(rows.map(r=>r.fps));
-let current=baseline,method='full',trimK=0;
+let current=baseline,method='full',trimK=0,pointPositions=[],chartSize={width:900,height:325};
 const svg=$('trim-chart'),NS='http://www.w3.org/2000/svg';
 function el(name,attributes,text){const e=document.createElementNS(NS,name);for(const [k,v] of Object.entries(attributes||{}))e.setAttribute(k,String(v));if(text!==undefined)e.textContent=text;return e;}
 function label(r){return `บันทึก #${r.record} · ยิงจริง ${r.firingShot} · ${fmt(r.fps,1)} fps`;}
@@ -158,6 +158,7 @@ function draw(){
  const width=Math.max(240,svg.clientWidth||900),height=width<600?290:325;
  const left=width<600?45:56,right=18,top=25,bottom=40,plotW=width-left-right,plotH=height-top-bottom;
  const x=n=>left+(n-1)/38*plotW,y=v=>top+(2830-v)/70*plotH;
+ chartSize={width,height};pointPositions=[];
  svg.setAttribute('viewBox',`0 0 ${width} ${height}`);svg.replaceChildren();
  svg.append(el('title',{},'คลิกจุดเพื่อเอาออกหรือคืนข้อมูล ค่า Mean, SD และ ES เปลี่ยนตามทันที'));
  for(let tick=2760;tick<=2830;tick+=10){svg.append(el('line',{x1:left,x2:width-right,y1:y(tick),y2:y(tick),stroke:'#e8e1d5'}));svg.append(el('text',{x:left-8,y:y(tick)+3,'text-anchor':'end','font-size':10,fill:'#68645c'},fmt(tick,0)));}
@@ -168,6 +169,7 @@ function draw(){
  if(excluded.size)svg.append(el('line',{x1:left,x2:width-right,y1:y(current.mean),y2:y(current.mean),stroke:'#a33a2b','stroke-width':1.5}));
  for(const r of rows){
   const out=excluded.has(r.record),cx=x(r.record),cy=y(r.fps);
+  pointPositions.push({record:r.record,x:cx,y:cy});
   const g=el('g',{'class':'point','role':'button',tabindex:0,'data-record':r.record,'aria-pressed':!out,'aria-label':`${out?'คืน':'เอาออก'} ${label(r)}`});
   g.append(el('title',{},`${label(r)} · ${out?'เอาออกอยู่ — กดคืน':'นำมาคำนวณ — กดเพื่อเอาออก'}`));
   g.append(el('circle',{'class':'hit',cx,cy,r:10,fill:'transparent'}));
@@ -206,7 +208,14 @@ function trim(k){
  trimK=k;method=k?'symmetric':'full';$('tail-count').value=String(k);
  render(k?`ตัดต่ำสุด ${k} + สูงสุด ${k} จากข้อมูลเดิม 39 นัด · เหลือ ${39-2*k} นัด · SD ${fmt(stats(rows.filter(r=>!excluded.has(r.record)).map(r=>r.fps)).sd)} fps`:'คืนข้อมูลครบ 39 นัดแล้ว');
 }
-svg.addEventListener('click',e=>{const point=e.target.closest('[data-record]');if(point)toggle(Number(point.getAttribute('data-record')));});
+svg.addEventListener('click',e=>{
+ const point=e.target.closest('[data-record]');
+ if(typeof e.clientX==='number'&&e.detail!==0){
+  const box=svg.getBoundingClientRect(),px=(e.clientX-box.left)*chartSize.width/box.width,py=(e.clientY-box.top)*chartSize.height/box.height;
+  const nearest=pointPositions.reduce((best,p)=>{const distance=(p.x-px)**2+(p.y-py)**2;return distance<best.distance?{record:p.record,distance}:best;},{distance:Infinity});
+  if(nearest.distance<=144)toggle(nearest.record);
+ }else if(point)toggle(Number(point.getAttribute('data-record')));
+});
 svg.addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const point=e.target.closest('[data-record]');if(point){e.preventDefault();toggle(Number(point.getAttribute('data-record')));}});
 $('trim-three').addEventListener('click',()=>trim(3));$('reset').addEventListener('click',()=>trim(0));
 $('tail-form').addEventListener('submit',e=>{e.preventDefault();const value=$('tail-count').value.trim();trim(value===''?NaN:Number(value));});
